@@ -20,30 +20,40 @@
 // because it is too big to fit on one book page
 // Linked list implementation
 template <class E> 
-class LList: public List<E> {
+class LList : public List<E> {
 private:
-  Link<E>* head;       // Pointer to list header
-  Link<E>* tail;       // Pointer to last element
-  Link<E>* curr;       // Access to current element
-  int cnt;    	       // Size of list
+    Link<E>* head;       // Pointer to list header
+    Link<E>* tail;       // Pointer to last element
+    Link<E>* curr;       // Access to current element
+    int cnt;    	       // Size of list
 
-  void init() {        // Intialization helper method
-    curr = tail = head = new Link<E>;
-    cnt = 0;
-  }
-
-  void removeall() {   // Return link nodes to free store
-    while(head != NULL) {
-      curr = head;
-      head = head->next;
-      delete curr;
+    void init() {        // Intialization helper method
+        curr = tail = head = new Link<E>;
+        cnt = 0;
     }
-  }
+
+    void removeall() {   // Return link nodes to free store
+        while (head != NULL) {
+            curr = head;
+            head = head->next;
+            delete curr;
+        }
+    }
 
 public:
-  LList() { init(); }    // Constructor
-  ~LList() { removeall(); }                   // Destructor
-  void print() const;                // Print list contents
+    LList() { init(); }    // Constructor
+    ~LList() { removeall(); }                   // Destructor
+
+    // Print list contents 
+    void print() const{
+		Link<E>* temp = head;
+        while (temp->next != NULL) {
+            int count = temp->next->getCount();
+			cout << temp->next->element << " -- " << count << " ";
+			temp = temp->next;
+		}
+		cout << endl;
+}
   void clear() { removeall(); init(); }       // Clear list
 
   // Insert "it" at current position
@@ -111,4 +121,24 @@ public:
     Assert(curr->next != NULL, "No value");
     return curr->next->element;
   }
+
+
+  //Get the number of times the data at the current position has been accessed
+  int getCount() const {
+	  int count = curr->next->getCount();
+      return count;
+  }
+  //Increment the count of the data at the current position
+  void incrementCount() {
+      curr->next->incrementCount();
+  }
+
+  //Swap the data at the current position with the data at the next position
+  void swap() {
+      Link<E>* temp = curr->next;
+	  curr->next = curr->next->next;
+	  temp->next = curr->next->next;
+	  curr->next->next = temp;
+  }
+
 };
