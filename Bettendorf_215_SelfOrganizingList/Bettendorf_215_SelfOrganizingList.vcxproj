@@ -131,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="book.h" />
+    <ClInclude Include="Heuristics.h" />
     <ClInclude Include="link.h" />
     <ClInclude Include="list.h" />
     <ClInclude Include="llist.h" />

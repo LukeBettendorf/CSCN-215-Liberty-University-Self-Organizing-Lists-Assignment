@@ -35,5 +35,8 @@
     <ClInclude Include="SelfOrderedListADT.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Heuristics.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
