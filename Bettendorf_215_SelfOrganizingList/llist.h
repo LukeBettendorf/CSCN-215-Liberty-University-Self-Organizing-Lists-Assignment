@@ -49,7 +49,7 @@ public:
 		Link<E>* temp = head;
         while (temp->next != NULL) {
             int count = temp->next->getCount();
-			cout << temp->next->element << " -- " << count << " ";
+			cout << temp->next->element << " - " << count << " ";
 			temp = temp->next;
 		}
 		cout << endl;
@@ -125,20 +125,28 @@ public:
 
   //Get the number of times the data at the current position has been accessed
   int getCount() const {
+      Assert(curr->next != NULL, "No value");
 	  int count = curr->next->getCount();
       return count;
   }
   //Increment the count of the data at the current position
   void incrementCount() {
+      Assert(curr->next != NULL, "No value");
       curr->next->incrementCount();
+  }
+
+  //Set the count of the data at the current position
+  void setCount(int c) {
+     Assert(curr->next != NULL, "No value");
+     curr->next->setCount(c);
   }
 
   //Swap the data at the current position with the data at the next position
   void swap() {
+      Assert(curr->next != NULL, "No value");
       Link<E>* temp = curr->next;
 	  curr->next = curr->next->next;
 	  temp->next = curr->next->next;
 	  curr->next->next = temp;
   }
-
 };

@@ -28,8 +28,12 @@ public:
   void incrementCount() {
 	count++;
   }
+  void setCount(int c) {
+      count = c;
+  }
+
   //Get count
-  int getCount() {
+  int getCount() const {
       return count;
   }
 };

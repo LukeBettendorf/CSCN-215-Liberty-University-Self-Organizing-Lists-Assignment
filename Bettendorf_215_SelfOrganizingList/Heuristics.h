@@ -6,11 +6,11 @@ template<class E>
 class Heuristics : public SelfOrderedListADT<E> {
 private:
 	//List of elements
-	LList<E>* list;
+	LList<E> list;
 	//Determines which heuristic to use
 	bool isCount;
 	bool isMoveToFront;
-	bool isTransposition;
+	bool isTranspose;
 
 	//Number of comparisons
 	int compares;
@@ -25,10 +25,10 @@ public:
 	Heuristics(int heuristic=1) {
 
 		//Initialize list / Variables
-		list = new LList<E>();
+		LList<E> list;
 		isCount = false;
 		isMoveToFront = false;
-		isTransposition = false;
+		isTranspose = false;
 		compares = 0;
 		listSize = 0;
 		if (heuristic == 1) {
@@ -38,12 +38,11 @@ public:
 			isMoveToFront = true;
 		}
 		else if (heuristic == 3) {
-			isTransposition = true;
+			isTranspose = true;
 		}
 	}
 	~Heuristics() {
-		//Delete list
-		list->clear();
+		list.clear();
 	}
 
 
@@ -52,16 +51,69 @@ public:
 	//Increments the compare instance variable every time it compares 'it' to
 	//other members of the list. Returns true if 'it' is found.
 	bool find(const E& it) {
+		//Start at the beginning of the list.
+		list.moveToStart();
+		//If the list is empty, add 'it' to the list and return false.
+		if (listSize == 0) {
+			add(it);
+			return false;
+		}
+		//If the list is not empty, search for 'it'.
+		for (int i = 0; i < listSize; i++) {
+			if (list.getValue() == it) {
+				list.incrementCount();
+				if (isCount) {
+					//Count Heuristic Logic
+					int count1 = list.getCount();
+					list.prev();
+					int count2 = list.getCount();
+					//If the count of 'it' is greater than the count of the node before it, swap them
+					if(count1 > count2 && list.currPos() + 1 > 0) {
+						list.swap();
+					}
+					return true;
+				}
+				else if (isMoveToFront) {
+					//Move to Front Heuristic Logic
+					//Get the count of the node
+					int count = list.getCount();
+					//Move 'it' to the front of the list
+					list.moveToStart();
+					list.insert(it);
+					//Set the count of 'it' to the count of the node that was removed
+					list.setCount(count);
+					//Remove the duplicate 'it' from the list
+					list.moveToPos(i+1);
+					list.remove();
+					return true;
+				}
+				else if (isTranspose) {
+					//Transposition Logic
+					//If 'it' is not the first element in the list, swap it with the node before it
+					if (list.currPos() > 0) {
+						list.prev();
+						list.swap();
+					}
+					return true;
+				}
+			}
+			list.next();
+		}
 		return true;
 	}
 
 	//Functions from SelfOrderedListADT
-		//Called by find if 'it' is not in the list. Adds the new 'it' to the list
+	//Called by find if 'it' is not in the list. Adds the new 'it' to the list
 	//Can also be called independently when initially loading the list with
 	//unique values and when you want to load the list in the order 'it' is 
 	//read without your re-order method being called (or the number of compares
 	//being incremented.
-	void add(const E& it) {} //Add new 'it' to the list
+
+	 //Add new 'it' to the list
+	void add(const E& it) {
+		list.append(it);
+		listSize++;
+	}
 
 	//Returns the number of accumulated compares
 	int getCompares() const {
@@ -76,10 +128,9 @@ public:
 	//In order print of the list.  printlist() prints the entire list
 	//whereas printlist(n) prints n nodes.
 	void printlist() const {
-
+		list.print();
 	}
 	void printlist(int n) const {
-
+		
 	}
-
 };
