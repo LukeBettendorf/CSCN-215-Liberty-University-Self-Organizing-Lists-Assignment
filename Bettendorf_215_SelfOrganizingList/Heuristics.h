@@ -70,8 +70,9 @@ public:
 					list.prev();
 					int count2 = list.getCount();
 					// If the count of 'it' is greater than the count of the node before it, swap them
-					if (count1 > count2 && list.currPos() + 1 > 0) {
+					if (count1 > count2 && list.currPos() != 0) {
 						list.swap();
+						return true;
 					}
 					return true;
 				}
@@ -95,17 +96,16 @@ public:
 					if (list.currPos() > 0) {
 						list.prev();
 						list.swap();
+						return true;
 					}
 					return true;
 				}
 			}
 			list.next();
 		}
-
-		// If 'it' is not found and the list is full, add it at the end
+		// If 'it' is not found in the list, add it to the list
 		add(it);
 		return false;
-
 	}
 	//Functions from SelfOrderedListADT
 	//Called by find if 'it' is not in the list. Adds the new 'it' to the list
@@ -116,8 +116,7 @@ public:
 
 	 //Appends the 'it' to the list
 	void add(const E& it) {
-		list.moveToEnd();
-		list.insert(it);
+		list.append(it);
 		listSize++;
 	}
 
@@ -138,5 +137,9 @@ public:
 	}
 	void printlist(int n) const {
 		list.print(n);
+	}
+	void printInfo() const {
+		std::cout << "Compares: " << compares << endl;
+		std::cout << "List Size: " << listSize << endl;
 	}
 };

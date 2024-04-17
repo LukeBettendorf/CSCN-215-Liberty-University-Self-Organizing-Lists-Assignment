@@ -34,6 +34,10 @@ int main() {
     //print the lists
     cout << "Count Heuristic:\n";
     count.printlist();
+    cout << "Move to Front Heuristic:\n";
+    moveToFront.printlist();
+    cout << "Transpose Heuristic:\n";
+    transpose.printlist();
 
     return 0;
 }

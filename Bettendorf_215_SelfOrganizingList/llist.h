@@ -3,6 +3,7 @@
 #include "book.h"
 #include "link.h"
 #include "list.h"
+#include <iostream>
 
 // From the software distribution accompanying the textbook
 // "A Practical Introduction to Data Structures and Algorithm Analysis,
@@ -49,20 +50,20 @@ public:
 		Link<E>* temp = head;
         while (temp->next != NULL) {
             int count = temp->next->getCount();
-			cout << temp->next->element << " - " << count << " ";
+			std::cout << temp->next->element << " - " << count << " ";
 			temp = temp->next;
 		}
-		cout << endl;
+		std::cout << endl;
     }
     //This function prints the first n elements of the list
     void print(int n) const {
         Link<E>* temp = head;
         for (int i = 0; i < n; i++) {
 			int count = temp->next->getCount();
-			cout << temp->next->element << " - " << count << " ";
+			std::cout << temp->next->element << " - " << count << " ";
 			temp = temp->next;
 		}
-		cout << endl;
+		std::cout << endl;
     }
 
 
@@ -76,7 +77,7 @@ public:
   }
 
   void append(const E& it) { // Append "it" to list
-    tail = tail->next = new Link<E>(it, NULL);
+	tail = tail->next = new Link<E>(it, NULL);
     cnt++;
   }
 
@@ -153,12 +154,21 @@ public:
      curr->next->setCount(c);
   }
 
-  //Swap the data at the current position with the data at the next position
+  // Swap the data at the current position with the data at the next position
   void swap() {
       Assert(curr->next != NULL, "No value");
       Link<E>* temp = curr->next;
-	  curr->next = curr->next->next;
-	  temp->next = curr->next->next;
-	  curr->next->next = temp;
+      curr->next = temp->next;
+      temp->next = temp->next->next;
+      //Update the tail if the tail was swapped.
+      if (tail == curr->next) {
+          tail = temp;
+      }
+      //Update the head if the head was swapped.
+      if (head == curr) {
+		  head = temp;
+	  }
+      curr->next->next = temp;
   }
+
 };
