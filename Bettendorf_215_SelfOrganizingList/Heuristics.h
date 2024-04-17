@@ -51,45 +51,47 @@ public:
 	//Increments the compare instance variable every time it compares 'it' to
 	//other members of the list. Returns true if 'it' is found.
 	bool find(const E& it) {
-		//Start at the beginning of the list.
+		// Start at the beginning of the list.
 		list.moveToStart();
-		//If the list is empty, add 'it' to the list and return false.
+
+		// If the list is empty, add 'it' to the list and return false.
 		if (listSize == 0) {
 			add(it);
 			return false;
 		}
-		//If the list is not empty, search for 'it'.
+
+		// If the list is not empty, search for 'it'.
 		for (int i = 0; i < listSize; i++) {
 			if (list.getValue() == it) {
 				list.incrementCount();
 				if (isCount) {
-					//Count Heuristic Logic
+					// Count Heuristic Logic
 					int count1 = list.getCount();
 					list.prev();
 					int count2 = list.getCount();
-					//If the count of 'it' is greater than the count of the node before it, swap them
-					if(count1 > count2 && list.currPos() + 1 > 0) {
+					// If the count of 'it' is greater than the count of the node before it, swap them
+					if (count1 > count2 && list.currPos() + 1 > 0) {
 						list.swap();
 					}
 					return true;
 				}
 				else if (isMoveToFront) {
-					//Move to Front Heuristic Logic
-					//Get the count of the node
+					// Move to Front Heuristic Logic
+					// Get the count of the node
 					int count = list.getCount();
-					//Move 'it' to the front of the list
+					// Move 'it' to the front of the list
 					list.moveToStart();
 					list.insert(it);
-					//Set the count of 'it' to the count of the node that was removed
+					// Set the count of 'it' to the count of the node that was removed
 					list.setCount(count);
-					//Remove the duplicate 'it' from the list
-					list.moveToPos(i+1);
+					// Remove the duplicate 'it' from the list
+					list.moveToPos(i + 1);
 					list.remove();
 					return true;
 				}
 				else if (isTranspose) {
-					//Transposition Logic
-					//If 'it' is not the first element in the list, swap it with the node before it
+					// Transposition Logic
+					// If 'it' is not the first element in the list, swap it with the node before it
 					if (list.currPos() > 0) {
 						list.prev();
 						list.swap();
@@ -99,9 +101,12 @@ public:
 			}
 			list.next();
 		}
-		return true;
-	}
 
+		// If 'it' is not found and the list is full, add it at the end
+		add(it);
+		return false;
+
+	}
 	//Functions from SelfOrderedListADT
 	//Called by find if 'it' is not in the list. Adds the new 'it' to the list
 	//Can also be called independently when initially loading the list with
@@ -109,9 +114,10 @@ public:
 	//read without your re-order method being called (or the number of compares
 	//being incremented.
 
-	 //Add new 'it' to the list
+	 //Appends the 'it' to the list
 	void add(const E& it) {
-		list.append(it);
+		list.moveToEnd();
+		list.insert(it);
 		listSize++;
 	}
 
@@ -131,6 +137,6 @@ public:
 		list.print();
 	}
 	void printlist(int n) const {
-		
+		list.print(n);
 	}
 };

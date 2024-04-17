@@ -53,8 +53,20 @@ public:
 			temp = temp->next;
 		}
 		cout << endl;
-}
-  void clear() { removeall(); init(); }       // Clear list
+    }
+    //This function prints the first n elements of the list
+    void print(int n) const {
+        Link<E>* temp = head;
+        for (int i = 0; i < n; i++) {
+			int count = temp->next->getCount();
+			cout << temp->next->element << " - " << count << " ";
+			temp = temp->next;
+		}
+		cout << endl;
+    }
+
+
+    void clear() { removeall(); init(); }       // Clear list
 
   // Insert "it" at current position
   void insert(const E& it) {
