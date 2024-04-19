@@ -174,27 +174,4 @@ public:
       curr->next->next = temp;
   }
 
-  void swap2() {
-      //For 3 elements, the current element is the first element.
-      //The 3rd element becomes the 1st element, and the 2nd element becomes the 3rd element.
-      //The 1st element becomes the 2nd element.
-      if (curr->next != NULL && curr->next->next != NULL && curr->next->next->next != NULL) {
-		  Link<E>* temp = curr->next;
-		  Link<E>* temp2 = curr->next->next;
-		  Link<E>* temp3 = curr->next->next->next;
-		  curr->next = temp2;
-		  temp2->next = temp;
-		  temp->next = temp3;
-		  //Update the tail if the tail was swapped.
-		  if (tail == temp) {
-			  tail = temp2;
-		  }
-		  //Update the head if the head was swapped.
-		  if (head == temp) {
-			  head = temp2;
-		  }
-
-      }
-  }
-
 };

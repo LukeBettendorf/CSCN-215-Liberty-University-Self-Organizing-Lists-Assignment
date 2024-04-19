@@ -3,14 +3,33 @@
 #include <sstream>
 #include <string>
 #include <vector>"
+#include "llist.h"
 #include "Heuristics.h"
 
 
 using namespace std;
 
 int main() {
+    //Display the header
+    cout << "Luke Bettendorf - CSCN 215 (003)\n";
+    cout << "Programming Assignment 4: Self - Organizing Lists\n\n";
+
+    //---------------------------------------------------------------------------------------
+    // Test #1: Demonstrate the heuristics with a list of characters
     char input[8] = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H' };
     char search[14] = { 'F', 'D', 'F', 'G', 'E', 'G', 'F', 'A', 'D', 'F', 'G', 'E', 'H', 'I' };
+
+    //Original List:
+    LList<char> list;
+    //Add each member of the input array to the list
+    for (int i = 0; i < 8; i++) {
+        list.append(input[i]);
+    }
+    //Print the list
+    cout << "My starting list structure for all heuristics is:\n";
+    list.print();
+    cout << endl;
+
     //Heuristic Demonstrations
     Heuristics<char> count(1);
     Heuristics<char> moveToFront(2);
@@ -24,6 +43,7 @@ int main() {
 
     bool isfound = false;
 
+    //Search for each element in the list
     for (int i = 0; i < 14; i++) {
         isfound = count.find(search[i]);
         isfound = moveToFront.find(search[i]);
@@ -39,7 +59,9 @@ int main() {
     transpose.printlist();
 
     //---------------------------------------------------------------------------------------
-    //Test with a file
+    //Test #2: Read from a file
+
+    //Open the file
     ifstream infile;
     infile.open("test.txt");
 
@@ -49,6 +71,7 @@ int main() {
         return 0;
     }
 
+    //Initialize a vector to store the words
     string line;
     vector<string> words;
 
@@ -70,15 +93,16 @@ int main() {
 
     //Search for each word in each list
     for (int i = 0; i < words.size(); i++) {
-		countList.find(words[i]);
+        countList.find(words[i]);
         moveToFrontList.find(words[i]);
         transposeList.find(words[i]);
-	}
-    
+    }
+
     //Print the lists
     countList.printlist(10);
     moveToFrontList.printlist(10);
     transposeList.printlist(10);
 
+    system("Pause");
     return 0;
 }

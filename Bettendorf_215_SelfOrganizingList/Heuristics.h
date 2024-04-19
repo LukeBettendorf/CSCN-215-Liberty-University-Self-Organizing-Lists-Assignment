@@ -160,8 +160,8 @@ public:
 		return listSize;
 	}
 
-	//Prints the number of compares and the size of the list
-	void printInfo() const {
+	//Prints the type of heuristic used
+	void printType() const {
 		//Type of Heuristic
 		if (isCount) {
 			std::cout << "Count Heuristic:" << endl;
@@ -172,23 +172,25 @@ public:
 		else if (isTranspose) {
 			std::cout << "Transpose Heuristic:" << endl;
 		}
-
-		std::cout << "Number of Compares: " << compares << endl;
-		std::cout << "List Size: " << listSize << endl;
 	}
 
 	//Print the list
 	//In order print of the list.  printlist() prints the entire list
 	//whereas printlist(n) prints n nodes.
 	void printlist() const {
-		printInfo();
+		printType();
+		std::cout << "The number of compares is: " << compares << endl;
+		std::cout << "My final list structure with frequencies is:\n";
 		list.print();
-		std::cout << endl;
+		std::cout << "My list size is: " << listSize << endl << endl;
+
 	}
 	void printlist(int n) const {
-		printInfo();
+		printType();
+		std::cout << "The number of compares is: " << compares << endl;
+		std::cout << "My final list structure with frequencies is:\n";
 		list.print(n);
-		std::cout << endl;
+		std::cout << "My list size is: " << listSize << endl << endl;
 	}
 
 };
