@@ -1,7 +1,15 @@
 #pragma once
 #include "SelfOrderedListADT.h"
 #include "llist.h"
+#include <iostream>
 
+
+//Heuristics class
+// Last Modified: 04/18/2024
+// Author: Luke Bettendorf
+
+//This class is used to implement the three self-ordering heuristics: 
+// Count, Move to Front, and Transposition.
 template<class E>
 class Heuristics : public SelfOrderedListADT<E> {
 private:
@@ -17,6 +25,85 @@ private:
 
 	//Size of the list
 	int listSize;
+
+	//This function is used to insert an element at the front of the list.
+	//It is a helper function for reorder.
+	void insertFront(E it) {
+		// Move 'it' to the front of the list
+		list.moveToStart();
+		list.insert(it);
+		listSize++;
+	}
+
+
+	//This function is used to reorder the list based on the heuristic used.
+	//It is a helper function for find.
+	bool reorder(const E& it) {
+
+		// If the list is not empty, search for 'it'.
+		for (int i = 0; i < listSize; i++) {
+			list.moveToPos(i);
+			compares++;
+			//If 'it' is found in the list, increment the count of 'it' 
+			// and reorder the list based on the heuristic used.
+			if (list.getValue() == it) {
+				list.incrementCount();
+				if (isCount) {
+					// Count Heuristic Logic
+					int count1 = list.getCount();
+					list.prev();
+					int count2 = list.getCount();
+
+					// Count Heuristic Logic
+					// If the count of 'it' is greater than the count of the node before it,
+					// Move it  towards the front.
+					while (count1 > count2 && list.currPos() >= 0) {
+						list.swap();
+						list.prev();
+						count2 = list.getCount();
+					}
+					return true;
+				}
+				else if (isMoveToFront) {
+					// Move to Front Heuristic Logic
+					// Get the count of the node
+					int count = list.getCount();
+					// Move 'it' to the front of the list
+					list.moveToStart();
+					list.insert(it);
+					// Set the count of 'it' to the count of the node that was removed
+					list.setCount(count);
+					// Remove the duplicate 'it' from the list
+					list.moveToPos(i + 1);
+					list.remove();
+					return true;
+				}
+				else if (isTranspose) {
+					// Transposition Logic
+					// If 'it' is not the first element in the list, swap it with the element before it.
+					if (list.currPos() > 0 && listSize > 1) {
+						list.prev();
+						list.swap();
+						return true;
+					}
+					else {
+						return true;
+					}
+				}
+			}
+			list.next();
+		}
+		// If 'it' is not found in the list, add it to the list
+		if (isCount == true || isTranspose == true) {
+			add(it);
+			return false;
+		}
+		else if (isMoveToFront == true) {
+			insertFront(it);
+			return false;
+		}
+	}
+
 
 public:
 
@@ -52,91 +139,17 @@ public:
 	//other members of the list. Returns true if 'it' is found.
 	bool find(const E& it) {
 
+		bool isfound = false;
 		// If the list is empty, add 'it' to the list and return false.
 		if (listSize == 0) {
 			add(it);
-			return false;
+			return isfound;
 		}
+		isfound = reorder(it);
 
-		// If the list is not empty, search for 'it'.
-		for (int i = 0; i < listSize; i++) {
-			list.moveToPos(i);
-			compares++;
-			if (list.getValue() == it) {
-				list.incrementCount();
-				if (isCount) {
-					// Count Heuristic Logic
-					int count1 = list.getCount();
-					list.prev();
-					int count2 = list.getCount();
-
-                    // Count Heuristic Logic
-                    // If the count of 'it' is greater than the count of the node before it,
-                    // Move it 2 spaces towards the front.
-
-					// Count Heuristic Logic
-					// If the count of 'it' is greater than the count of the node before it,
-					// Move it  towards the front.
-					while (count1 > count2 && list.currPos() >= 0) {
-						list.swap();
-						list.prev();
-						count2 = list.getCount();
-					}
-					return true;
-				}
-				else if (isMoveToFront) {
-					// Move to Front Heuristic Logic
-					// Get the count of the node
-					int count = list.getCount();
-					// Move 'it' to the front of the list
-					list.moveToStart();
-					list.insert(it);
-					// Set the count of 'it' to the count of the node that was removed
-					list.setCount(count);
-					// Remove the duplicate 'it' from the list
-					list.moveToPos(i + 1);
-					list.remove();
-					return true;
-				}
-				else if (isTranspose) {
-					// Transposition Logic
-					// If 'it' is not the first element in the list, swap it with the node before it
-					// Count Heuristic Logic
-
-
-					// If the count of 'it' is greater than the count of the node before it, swap them
-					if (list.currPos() > 0 && listSize > 1) {
-						list.prev();
-						list.swap();
-						return true;
-					}
-					else {
-						return true;
-					}
-				}
-			}
-			list.next();
-		}
-		// If 'it' is not found in the list, add it to the list
-		if(isCount == true || isTranspose == true) {
-			add(it);
-			return false;
-		}
-		else if (isMoveToFront == true) {
-			insertFront(it);
-			return false;
-		}
-		return false;
+		return isfound;
 
 	}
-
-	void insertFront(E it) {
-		// Move 'it' to the front of the list
-		list.moveToStart();
-		list.insert(it);
-		listSize++;
-	}
-
 
 	//Functions from SelfOrderedListADT
 	//Called by find if 'it' is not in the list. Adds the new 'it' to the list
@@ -174,9 +187,7 @@ public:
 		}
 	}
 
-	//Print the list
-	//In order print of the list.  printlist() prints the entire list
-	//whereas printlist(n) prints n nodes.
+	//Print the entire list.
 	void printlist() const {
 		printType();
 		std::cout << "The number of compares is: " << compares << endl;
@@ -185,6 +196,7 @@ public:
 		std::cout << "My list size is: " << listSize << endl << endl;
 
 	}
+	//Print n nodes of the list.
 	void printlist(int n) const {
 		printType();
 		std::cout << "The number of compares is: " << compares << endl;
