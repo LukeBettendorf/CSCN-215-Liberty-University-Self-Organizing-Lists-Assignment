@@ -46,14 +46,16 @@ public:
     ~LList() { removeall(); }                   // Destructor
 
     // Print list contents 
-    void print() const{
-		Link<E>* temp = head;
+    void print() const {
+        Link<E>* temp = head;
         while (temp->next != NULL) {
-            int count = temp->next->getCount();
-			std::cout << temp->next->element << " - " << count << " ";
-			temp = temp->next;
-		}
-		std::cout << endl;
+            if (temp->next != NULL) {
+                int count = temp->next->getCount();
+                std::cout << temp->next->element << " - " << count << " ";
+                temp = temp->next;
+            }
+        }
+        std::cout << endl;
     }
     //This function prints the first n elements of the list
     void print(int n) const {
@@ -73,6 +75,7 @@ public:
   void insert(const E& it) {
     curr->next = new Link<E>(it, curr->next);  
     if (tail == curr) tail = curr->next;  // New tail
+    //Update the head if it was inserted at the beginning
     cnt++;
   }
 
@@ -165,10 +168,33 @@ public:
           tail = temp;
       }
       //Update the head if the head was swapped.
-      if (head == curr) {
+      if (head == curr->next) {
 		  head = temp;
 	  }
       curr->next->next = temp;
+  }
+
+  void swap2() {
+      //For 3 elements, the current element is the first element.
+      //The 3rd element becomes the 1st element, and the 2nd element becomes the 3rd element.
+      //The 1st element becomes the 2nd element.
+      if (curr->next != NULL && curr->next->next != NULL && curr->next->next->next != NULL) {
+		  Link<E>* temp = curr->next;
+		  Link<E>* temp2 = curr->next->next;
+		  Link<E>* temp3 = curr->next->next->next;
+		  curr->next = temp2;
+		  temp2->next = temp;
+		  temp->next = temp3;
+		  //Update the tail if the tail was swapped.
+		  if (tail == temp) {
+			  tail = temp2;
+		  }
+		  //Update the head if the head was swapped.
+		  if (head == temp) {
+			  head = temp2;
+		  }
+
+      }
   }
 
 };

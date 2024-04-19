@@ -51,8 +51,6 @@ public:
 	//Increments the compare instance variable every time it compares 'it' to
 	//other members of the list. Returns true if 'it' is found.
 	bool find(const E& it) {
-		// Start at the beginning of the list.
-		list.moveToStart();
 
 		// If the list is empty, add 'it' to the list and return false.
 		if (listSize == 0) {
@@ -62,6 +60,8 @@ public:
 
 		// If the list is not empty, search for 'it'.
 		for (int i = 0; i < listSize; i++) {
+			list.moveToPos(i);
+			compares++;
 			if (list.getValue() == it) {
 				list.incrementCount();
 				if (isCount) {
@@ -69,10 +69,18 @@ public:
 					int count1 = list.getCount();
 					list.prev();
 					int count2 = list.getCount();
-					// If the count of 'it' is greater than the count of the node before it, swap them
-					if (count1 > count2 && list.currPos() != 0) {
+
+                    // Count Heuristic Logic
+                    // If the count of 'it' is greater than the count of the node before it,
+                    // Move it 2 spaces towards the front.
+
+					// Count Heuristic Logic
+					// If the count of 'it' is greater than the count of the node before it,
+					// Move it  towards the front.
+					while (count1 > count2 && list.currPos() >= 0) {
 						list.swap();
-						return true;
+						list.prev();
+						count2 = list.getCount();
 					}
 					return true;
 				}
@@ -93,20 +101,43 @@ public:
 				else if (isTranspose) {
 					// Transposition Logic
 					// If 'it' is not the first element in the list, swap it with the node before it
-					if (list.currPos() > 0) {
+					// Count Heuristic Logic
+
+
+					// If the count of 'it' is greater than the count of the node before it, swap them
+					if (list.currPos() > 0 && listSize > 1) {
 						list.prev();
 						list.swap();
 						return true;
 					}
-					return true;
+					else {
+						return true;
+					}
 				}
 			}
 			list.next();
 		}
 		// If 'it' is not found in the list, add it to the list
-		add(it);
+		if(isCount == true || isTranspose == true) {
+			add(it);
+			return false;
+		}
+		else if (isMoveToFront == true) {
+			insertFront(it);
+			return false;
+		}
 		return false;
+
 	}
+
+	void insertFront(E it) {
+		// Move 'it' to the front of the list
+		list.moveToStart();
+		list.insert(it);
+		listSize++;
+	}
+
+
 	//Functions from SelfOrderedListADT
 	//Called by find if 'it' is not in the list. Adds the new 'it' to the list
 	//Can also be called independently when initially loading the list with
@@ -129,17 +160,35 @@ public:
 		return listSize;
 	}
 
+	//Prints the number of compares and the size of the list
+	void printInfo() const {
+		//Type of Heuristic
+		if (isCount) {
+			std::cout << "Count Heuristic:" << endl;
+		}
+		else if (isMoveToFront) {
+			std::cout << "Move to Front Heuristic:" << endl;
+		}
+		else if (isTranspose) {
+			std::cout << "Transpose Heuristic:" << endl;
+		}
+
+		std::cout << "Number of Compares: " << compares << endl;
+		std::cout << "List Size: " << listSize << endl;
+	}
+
 	//Print the list
 	//In order print of the list.  printlist() prints the entire list
 	//whereas printlist(n) prints n nodes.
 	void printlist() const {
+		printInfo();
 		list.print();
+		std::cout << endl;
 	}
 	void printlist(int n) const {
+		printInfo();
 		list.print(n);
+		std::cout << endl;
 	}
-	void printInfo() const {
-		std::cout << "Compares: " << compares << endl;
-		std::cout << "List Size: " << listSize << endl;
-	}
+
 };
